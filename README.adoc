@@ -18,7 +18,7 @@ javadoc classifier
 <plugin>
   <groupId>com.bluetrainsoftware.maven</groupId>
   <artifactId>groovydoc-maven-plugin</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
   <executions>
     <execution>
       <id>attach-docs</id>
@@ -34,3 +34,25 @@ javadoc classifier
 
 All of the known overrides can be specified, some do not work however (such as specifying excludes and includes). If
 there is a calling for it, I can implement it.
+
+e.g.
+
+[source,xml,index=2]
+----
+<plugin>
+  <groupId>com.bluetrainsoftware.maven</groupId>
+  <artifactId>groovydoc-maven-plugin</artifactId>
+  <version>1.2</version>
+  <executions>
+    <execution>
+      <id>attach-docs</id>
+      <goals>
+        <goal>attach-docs</goal>
+      </goals>
+    </execution>
+  </executions>
+  <configuration>
+    <scope>private</scope>
+  </configuration>
+</plugin>
+----
