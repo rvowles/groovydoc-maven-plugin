@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.bluetrainsoftware.parent</groupId>
+    <artifactId>maven-plugin-parent</artifactId>
+    <version>1.1</version>
+  </parent>
+
+  <groupId>com.bluetrainsoftware.maven</groupId>
+  <artifactId>groovydoc-maven-plugin</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <packaging>maven-plugin</packaging>
+
+  <name>Maven plugin for groovydoc</name>
+
+  <description>
+    As all Groovy artifacts and mixed Groovy/Java artifacts must generate javadoc to release to central,
+    this provides a nice mechanism for this to occur. It is intended to be used with the Eclipse Maven plugin
+    and asks Maven for all source directories.
+  </description>
+
+  <scm>
+    <connection>scm:git:git@github.com:rvowles/groovydoc-maven-plugin</connection>
+    <developerConnection>scm:git:git@github.com:rvowles/groovydoc-maven-plugin</developerConnection>
+    <url>http://github.com/rvowles/groovydoc-maven-plugin</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.bluetrainsoftware.composite</groupId>
+      <artifactId>composite-maven-plugin</artifactId>
+      <version>[1,2)</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.bluetrainsoftware.composite</groupId>
+      <artifactId>composite-groovy</artifactId>
+      <version>[1,2)</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.bluetrainsoftware.composite</groupId>
+      <artifactId>composite-unit-test</artifactId>
+      <version>[1,2)</version>
+    </dependency>
+
+  </dependencies>
+</project>
