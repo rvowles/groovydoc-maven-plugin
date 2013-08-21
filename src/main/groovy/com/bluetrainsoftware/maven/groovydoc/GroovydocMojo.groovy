@@ -14,6 +14,9 @@ import org.apache.maven.plugins.annotations.ResolutionScope
 class GroovydocMojo extends AbstractGroovydocMojo {
 	@Override
 	void execute() throws MojoExecutionException, MojoFailureException {
+		if (project.getPackaging() == "pom")
+			return
+
 		generateGroovydoc()
 	}
 }

@@ -20,13 +20,16 @@ import java.util.zip.ZipFile
  * author: Richard Vowles - http://gplus.to/RichardVowles
  */
 @CompileStatic
-@Mojo(name="attach-doc", requiresProject = false, requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
+@Mojo(name="attach-docs", requiresProject = false, requiresDependencyResolution = ResolutionScope.COMPILE, defaultPhase = LifecyclePhase.PACKAGE)
 class AttachGroovydocMojo extends AbstractGroovydocMojo {
 	@Component
 	MavenProjectHelper projectHelper
 
 	@Override
 	void execute() throws MojoExecutionException, MojoFailureException {
+		if (project.getPackaging() == "pom")
+			return
+
 		generateGroovydoc()
 
 		File javadocFile = new File(project.basedir, "target/${project.artifactId}-${project.version}-javadoc.jar")
