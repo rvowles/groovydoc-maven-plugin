@@ -14,92 +14,87 @@ import org.codehaus.groovy.tools.groovydoc.LinkArgument
 import org.codehaus.groovy.tools.groovydoc.gstringTemplates.GroovyDocTemplateInfo
 
 /**
-
  * author: Richard Vowles - http://gplus.to/RichardVowles
  */
 
 @CompileStatic
 abstract class AbstractGroovydocMojo extends AbstractMojo {
-
 	@Component
 	MavenProject project
 
-	@Parameter(property = "destinationDirectory", defaultValue = '${project.basedir}/target/groovydoc')
+	@Parameter(property = 'destinationDirectory', defaultValue = '${project.basedir}/target/groovydoc')
 	File destinationDirectory
 
-	@Parameter(property = "additionalSourceDirectories")
+	@Parameter(property = 'additionalSourceDirectories')
 	List<String> additionalSourceDirectories
 
 	List<String> sourceDirectories = []
 
-	@Parameter
-	private List<String> packageNames;
+	@Parameter(property = 'run.packageNames')
+	private List<String> packageNames
 
-	@Parameter
-	private List<String> excludePackageNames;
+	@Parameter(property = 'run.excludePackageNames')
+	private List<String> excludePackageNames
 
-	@Parameter
-	private String windowTitle = "Groovy Documentation";
-	@Parameter
-	private String docTitle = "Groovy Documentation";
-	@Parameter
-	private String footer = "Groovy Documentation";
-	@Parameter
-	private String header = "Groovy Documentation";
-	@Parameter
-	private Boolean privateScope = Boolean.FALSE;
-	@Parameter
-	private Boolean protectedScope = Boolean.FALSE;
-	@Parameter
-	private Boolean packageScope = Boolean.FALSE;
-	@Parameter
-	private Boolean publicScope = Boolean.TRUE;
-	@Parameter
-	private boolean author = true;
-	@Parameter
-	private Boolean processScripts = Boolean.TRUE;
-	@Parameter
-	private Boolean includeMainForScripts = Boolean.TRUE;
-	@Parameter
-	private boolean useDefaultExcludes;
-	@Parameter
-	private boolean includeNoSourcePackages;
+	@Parameter(property = 'run.windowTitle', defaultValue = '${project.groupId}:${project.artifactId}:${project.version}')
+	private String windowTitle
+	@Parameter(property = 'run.docTitle', defaultValue = '${project.groupId}:${project.artifactId}:${project.version}')
+	private String docTitle
+	@Parameter(property = 'run.footer', defaultValue = '${project.groupId}:${project.artifactId}:${project.version}')
+	private String footer
+	@Parameter(property = 'run.header', defaultValue = '${project.groupId}:${project.artifactId}:${project.version}')
+	private String header
 
+	@Parameter(property = 'run.scope', defaultValue = 'public')
+	private String scope
 
-	private List<String> validExtensions;
-	private List<String> sourceFilesToDoc = [];
-	private List<LinkArgument> links = new ArrayList<LinkArgument>();
+	@Parameter(property = 'run.author', defaultValue = 'true')
+	private boolean author
 
-	@Parameter
-	private File overviewFile;
+	@Parameter(property = 'run.processScripts', defaultValue = 'true')
+	private boolean processScripts
 
-	@Parameter
-	private File styleSheetFile;
+	@Parameter(property = 'run.includeMainForScripts', defaultValue = 'true')
+	private boolean includeMainForScripts
+
+	private List<String> validExtensions
+	private List<String> sourceFilesToDoc = []
+	private List<LinkArgument> links = new ArrayList<LinkArgument>()
+
+	public AbstractGroovydocMojo() {
+		links.add(new LinkArgument(packages: 'java.,org.xml.,javax.,org.xml.', href: 'http://download.oracle.com/javase/6/docs/api'))
+		links.add(new LinkArgument(packages: 'java.,org.xml.,javax.,org.xml.', href: 'http://download.oracle.com/javase/6/docs/api'))
+		links.add(new LinkArgument(packages: 'groovy.,org.codehaus.groovy.', href: 'http://groovy.codehaus.org/api/'))
+	}
+
+	@Parameter(property = 'run.overviewFile')
+	private File overviewFile
+
+	@Parameter(property = 'run.stylesheetFile')
+	private File styleSheetFile
 
 	// dev note: update javadoc comment for #setExtensions(String) if updating below
-	@Parameter
-	private String extensions = ".java:.groovy:.gv:.gvy:.gsh";
+	@Parameter(property = 'run.extensions')
+	private String extensions = '.java:.groovy:.gv:.gvy:.gsh'
 
-	@Parameter
-	private String charset;
+	@Parameter(property = 'run.charset')
+	private String charset
 
-	@Parameter
-	private String fileEncoding;
+	@Parameter(property = 'run.fileEncoding')
+	private String fileEncoding
 
+	private List<String> validScopes = ['package', 'private', 'protected', 'public']
 
 	private void checkScopeProperties(Properties properties) {
-
-		// make protected the default scope and check for invalid duplication
-		int scopeCount = 0;
-		if (packageScope) scopeCount++;
-		if (privateScope) scopeCount++;
-		if (protectedScope) scopeCount++;
-		if (publicScope) scopeCount++;
-		if (scopeCount == 0) {
-			protectedScope = true;
-		} else if (scopeCount > 1) {
-			throw new MojoFailureException("Groovydoc: More than one of public, private, package, or protected scopes specified.");
+		if (!validScopes.contains(scope)) {
+			throw new MojoFailureException('Groovydoc: More than one of public, private, package, or protected scopes specified.');
 		}
+
+		properties.setProperty('publicScope', (scope == 'public').toString());
+		properties.setProperty('protectedScope', (scope == 'protected').toString());
+		properties.setProperty('packageScope', (scope == 'package').toString());
+		properties.setProperty('privateScope', (scope == 'private').toString());
+
 	}
 
 	protected boolean matchesExtension(String name) {
@@ -112,13 +107,13 @@ abstract class AbstractGroovydocMojo extends AbstractMojo {
 	}
 
 	/**
-	 * These have to be relative otherwise they get referred to as "absolute" files, and all go in the DefaultPackage.
+	 * These have to be relative otherwise they get referred to as 'absolute' files, and all go in the DefaultPackage.
 	 *
 	 */
 	protected void spelunk(File dir, Set<String> files, String prefix) {
 		dir.listFiles().each { File f ->
 			if (f.isDirectory()) {
-				if (!f.name.startsWith(".")) {
+				if (!f.name.startsWith('.')) {
 					spelunk(f, files, prefix + f.name + '/')
 				}
 
@@ -162,21 +157,17 @@ abstract class AbstractGroovydocMojo extends AbstractMojo {
 		}
 
 		Properties properties = new Properties();
-		properties.setProperty("windowTitle", windowTitle);
-		properties.setProperty("docTitle", docTitle);
-		properties.setProperty("footer", footer);
-		properties.setProperty("header", header);
+		properties.setProperty('windowTitle', windowTitle);
+		properties.setProperty('docTitle', docTitle);
+		properties.setProperty('footer', footer);
+		properties.setProperty('header', header);
 		checkScopeProperties(properties);
-		properties.setProperty("publicScope", publicScope.toString());
-		properties.setProperty("protectedScope", protectedScope.toString());
-		properties.setProperty("packageScope", packageScope.toString());
-		properties.setProperty("privateScope", privateScope.toString());
-		properties.setProperty("author", author.toString());
-		properties.setProperty("processScripts", processScripts.toString());
-		properties.setProperty("includeMainForScripts", includeMainForScripts.toString());
-		properties.setProperty("overviewFile", overviewFile != null ? overviewFile.getAbsolutePath() : "");
-		properties.setProperty("charset", charset != null ? charset : "");
-		properties.setProperty("fileEncoding", fileEncoding != null ? fileEncoding : "");
+		properties.setProperty('author', author.toString());
+		properties.setProperty('processScripts', processScripts.toString());
+		properties.setProperty('includeMainForScripts', includeMainForScripts.toString());
+		properties.setProperty('overviewFile', overviewFile != null ? overviewFile.getAbsolutePath() : '');
+		properties.setProperty('charset', charset != null ? charset : '');
+		properties.setProperty('fileEncoding', fileEncoding != null ? fileEncoding : '');
 
 		String[] sourcePaths = new String[sourceDirectories.size()]
 
@@ -197,17 +188,16 @@ abstract class AbstractGroovydocMojo extends AbstractMojo {
 			FileOutputTool output = new FileOutputTool();
 			htmlTool.renderToOutput(output, destinationDirectory.getCanonicalPath()); // TODO push destDir through APIs?
 		} catch (Exception e) {
-			throw new MojoFailureException("Groovydoc failed", e)
+			throw new MojoFailureException('Groovydoc failed', e)
 		}
 		// try to override the default stylesheet with custom specified one if needed
 		if (styleSheetFile != null) {
 			try {
 				String css = ResourceGroovyMethods.getText(styleSheetFile);
-				File outfile = new File(destinationDirectory, "stylesheet.css");
+				File outfile = new File(destinationDirectory, 'stylesheet.css');
 				ResourceGroovyMethods.setText(outfile, css);
 			} catch (IOException e) {
-				getLog().error("Warning: Unable to copy specified stylesheet '" + styleSheetFile.getAbsolutePath() +
-					"'. Using default stylesheet instead. Due to: " + e.getMessage());
+				getLog().error("Warning: Unable to copy specified stylesheet '${styleSheetFile.absolutePath}'. Using default stylesheet instead. Due to: " + e.getMessage(), e);
 			}
 		}
 	}
