@@ -9,7 +9,7 @@
 
 	<groupId>com.bluetrainsoftware.maven</groupId>
 	<artifactId>groovydoc-maven-plugin</artifactId>
-	<version>1.3</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>Maven plugin for groovydoc</name>
@@ -24,7 +24,7 @@
 		<connection>scm:git:git@github.com:rvowles/${project.artifactId}</connection>
 		<developerConnection>scm:git:git@github.com:rvowles/${project.artifactId}</developerConnection>
 		<url>http://github.com/rvowles/${project.artifactId}</url>
-		<tag>groovydoc-maven-plugin-1.3</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
