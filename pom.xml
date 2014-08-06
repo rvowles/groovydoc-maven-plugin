@@ -22,11 +22,15 @@
 	</description>
 
 	<scm>
-		<connection>scm:git:git@github.com:rvowles/groovydoc-maven-plugin</connection>
-		<developerConnection>scm:git:git@github.com:rvowles/groovydoc-maven-plugin</developerConnection>
-		<url>http://github.com/rvowles/groovydoc-maven-plugin</url>
+		<connection>scm:git:git@github.com:rvowles/${project.artifactId}</connection>
+		<developerConnection>scm:git:git@github.com:rvowles/${project.artifactId}</developerConnection>
+		<url>http://github.com/rvowles/${project.artifactId}</url>
 		<tag>HEAD</tag>
 	</scm>
+
+	<prerequisites>
+		<maven>3.0.5</maven>
+	</prerequisites>
 
 	<dependencies>
 		<dependency>
