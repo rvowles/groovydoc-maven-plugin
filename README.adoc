@@ -1,5 +1,7 @@
 = Groovydoc Maven Plugin
 
+No more crazy Ant in your poms.
+
 It turns out, that the javadoc plugin for Maven doesn't actually generate anything useful for Groovy projects. Further,
 when releasing artifacts to Apache Maven Central, you actually need Javadocs. So generating Groovydocs (which
 generates Groovy and Javadocs) turns out to be a fairly good idea, but the only method for doing it turned out to
@@ -11,7 +13,7 @@ supported, it defaults to public APIs.
 == Enabling the plugin
 
 Including the following in your POM will enable groovy docs to be generated with a -javadoc.jar extension and
-javadoc classifier
+javadoc classifier.
 
 [source,xml,index=2]
 ----
@@ -22,6 +24,7 @@ javadoc classifier
   <executions>
     <execution>
       <id>attach-docs</id>
+      <phase>package</phase>
       <goals>
         <goal>attach-docs</goal>
       </goals>
@@ -29,6 +32,27 @@ javadoc classifier
   </executions>
 </plugin>
 ----
+
+== Running the plugin directly
+
+Please note, depending on which method of compiling Groovy you are using, you need to make sure
+that Maven knows about the sources folder. So typically you could:
+
+----
+mvn clean compile groovydoc:generate
+----
+
+== Using Maven Tiles
+
+You can use this plugin directly as a tile as each time it is released, you will get a new version flow into
+your build if you wish.
+
+[source,xml,indent=2,index=2]
+----
+<tile>com.bluetrainsoftware.maven:groovydoc-maven-plugin:[1.3,2)</tile>
+----
+
+See the https://github.com/repaint-io/maven-tiles[Maven Tiles] plugin for more information.
 
 == Overrides
 
@@ -56,3 +80,13 @@ e.g.
   </configuration>
 </plugin>
 ----
+
+== Release Notes
+
+=== 1.3 - Javadoc Nuking
+
+When releasing, the javadoc plugin is run *regardless* of your desire to have it run. This version fixes that so you
+don't have to have it running.
+
+* forces the javadoc plugin to be skipped unless <forceSkipJavadoc>false</forceSkipJavadoc> is in your configuration.
+

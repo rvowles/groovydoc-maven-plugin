@@ -45,6 +45,9 @@ abstract class AbstractGroovydocMojo extends AbstractMojo {
 	@Parameter(property = 'run.header', defaultValue = '${project.groupId}:${project.artifactId}:${project.version}')
 	private String header
 
+	@Parameter(property = 'run.forceSkipJavadoc', defaultValue = 'true')
+	private boolean skipJavadoc = true
+
 	@Parameter(property = 'run.scope', defaultValue = 'public')
 	private String scope
 
@@ -106,6 +109,12 @@ abstract class AbstractGroovydocMojo extends AbstractMojo {
 		return false
 	}
 
+	protected void checkSkipJavadoc() {
+		if (skipJavadoc) {
+			System.setProperty('maven.javadoc.skip', 'true')
+		}
+	}
+
 	/**
 	 * These have to be relative otherwise they get referred to as 'absolute' files, and all go in the DefaultPackage.
 	 *
@@ -138,6 +147,8 @@ abstract class AbstractGroovydocMojo extends AbstractMojo {
 
 
 	protected void generateGroovydoc() {
+		checkSkipJavadoc() // force turn off javadoc plugin, it runs automatically during release and it knocks our docs out
+
 		String bd = project.basedir.absolutePath
 
 		for(Object srcRoot : project.getCompileSourceRoots()) {
