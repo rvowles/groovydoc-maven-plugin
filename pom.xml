@@ -85,7 +85,6 @@
 								<artifact>
 									<file>tile.xml</file>
 									<type>xml</type>
-									<classifier>tile-pom</classifier>
 								</artifact>
 							</artifacts>
 						</configuration>
