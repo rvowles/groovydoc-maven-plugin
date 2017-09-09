@@ -20,7 +20,7 @@ javadoc classifier.
 <plugin>
   <groupId>com.bluetrainsoftware.maven</groupId>
   <artifactId>groovydoc-maven-plugin</artifactId>
-  <version>1.3</version>
+  <version>2.1</version>
   <executions>
     <execution>
       <id>attach-docs</id>
@@ -66,7 +66,7 @@ e.g.
 <plugin>
   <groupId>com.bluetrainsoftware.maven</groupId>
   <artifactId>groovydoc-maven-plugin</artifactId>
-  <version>1.3</version>
+  <version>2.1</version>
   <executions>
     <execution>
       <id>attach-docs</id>
@@ -90,3 +90,6 @@ don't have to have it running.
 
 * forces the javadoc plugin to be skipped unless <forceSkipJavadoc>false</forceSkipJavadoc> is in your configuration.
 
+=== 2.1 - Upgrade to Groovy 2.4.12
+
+Some internal package rejigging, but essentially just a Groovy upgrade.
